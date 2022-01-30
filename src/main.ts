@@ -1,4 +1,3 @@
-// import './style.scss';
 import * as PIXI from "pixi.js"
 
 const load = (app: PIXI.Application) => {
@@ -55,7 +54,7 @@ function update(this: any, delta: number) {
   if (this.sprite.y <= 0 || this.sprite.y >= window.innerHeight - this.sprite.height) {
       this.velocity.y = -this.velocity.y;
   }
-  this.sprite.x += this.velocity.x;
+  this.sprite.x += this.velocity.x * delta;
   this.sprite.y += this.velocity.y;
 };
 
