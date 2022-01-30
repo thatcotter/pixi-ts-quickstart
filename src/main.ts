@@ -1,8 +1,8 @@
-import './style.scss';
+// import './style.scss';
 import * as PIXI from "pixi.js"
 
 const load = (app: PIXI.Application) => {
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
       app.loader.add('assets/hello-world.png').load(() => {
           resolve();
       });
