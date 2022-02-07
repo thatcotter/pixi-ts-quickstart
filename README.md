@@ -3,7 +3,7 @@
 This repo can be used as a minimal springboard for developing a pixijs app. The main.ts file has all the boilerplate code needed to get started.
 
 ## dependencies
-the package.json comes pre-ins
+the package.json comes pre-installed with pixi, typescript, and a few other helpful libraries
 
 
 ## usage
