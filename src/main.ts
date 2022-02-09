@@ -1,20 +1,16 @@
-import * as PIXI from "pixi.js"
+import * as PIXI from 'pixi.js'
 import * as dat from 'dat.gui'
+import { Model, SceneState } from './model'
+import { Scene } from './scene'
+import { SceneOne } from './sceneOne';
+import { SceneTwo } from './sceneTwo';
 
-let buttonData = {
-    width: 100,
-    height: 100,
-    isOver: false,
-    isPressed: false
-}
+let mModel = new Model();
+let sceneOne: SceneOne = new SceneOne(mModel);
+let sceneTwo: SceneTwo = new SceneTwo(mModel);
 
-let button = new PIXI.Graphics();
-button.interactive = true
-button.buttonMode = true
-button.on('pointerover', () => {buttonData.isOver = true})
-button.on('pointerout', () => {buttonData.isOver = false})
-button.on('pointerdown', () => {buttonData.isPressed = true})
-button.on('pointerup', () => {buttonData.isPressed = false})
+let graphics: PIXI.Graphics;
+
 
 const load = (app: PIXI.Application) => {
     return new Promise<void>((resolve) => {
@@ -26,7 +22,7 @@ const load = (app: PIXI.Application) => {
 
 const main = async () => {
     // Actual app
-    let app = new PIXI.Application();
+    let app = new PIXI.Application({antialias: true, backgroundColor: 0x111111});
 
     // Display application properly
     document.body.style.margin = '0';
@@ -36,70 +32,58 @@ const main = async () => {
     // View size = windows
     app.renderer.resize(window.innerWidth, window.innerHeight);
 
-
-    // set up gui
-    const gui = new dat.GUI()
-
-    gui.add(buttonData, 'width', 0, 200)
-    gui.add(buttonData, 'height', 0, 200)
-
-
     // Load assets
     await load(app);
-    let sprite = new PIXI.Sprite(
-        app.loader.resources['assets/hello-world.png'].texture
-    );
-    sprite.x = window.innerWidth / 2 - sprite.width / 2;
-    sprite.y = window.innerHeight / 2 - sprite.height / 2;
+
+    graphics = new PIXI.Graphics();
+    app.stage.addChild(graphics)
 
 
-    app.stage.addChild(sprite);
-    app.stage.addChild(button)
+    // app.stage.addChild(sprite);
+    // let cont = new PIXI.Container();
+    app.stage.addChild(sceneOne.container);
+    app.stage.addChild(sceneTwo.container);
 
     // Handle window resizing
     window.addEventListener('resize', (_e) => {
         app.renderer.resize(window.innerWidth, window.innerHeight);
-        sprite.x = window.innerWidth / 2 - sprite.width / 2;
-        sprite.y = window.innerHeight / 2 - sprite.height / 2;
+        // sprite.x = window.innerWidth / 2 - sprite.width / 2;
+        // sprite.y = window.innerHeight / 2 - sprite.height / 2;
     });
 
     document.body.appendChild(app.view);
-    document.body.appendChild(gui.domElement);
 
 
-    let context = {
-        velocity: { x: 1, y: 1 },
-        sprite
-    };
+    const gui = new dat.GUI()
+    gui.add(mModel.getInstance().buttonData, 'width', 0, 200)
+    gui.add(mModel.getInstance().buttonData, 'height', 0, 200)
+    gui.addColor(mModel.getInstance().buttonData, 'firstColor')
+    gui.addColor(mModel.getInstance().buttonData, 'secondColor')
 
-    app.ticker.add(update, context);
+
+    app.ticker.add(update);
 };
 
 // Cannot be an arrow function. Arrow functions cannot have a 'this' parameter.
-function update(this: any, delta: number) {
-    if (this.sprite.x <= 0 || this.sprite.x >= window.innerWidth - this.sprite.width) {
-        this.velocity.x = -this.velocity.x;
-    }
-    if (this.sprite.y <= 0 || this.sprite.y >= window.innerHeight - this.sprite.height) {
-        this.velocity.y = -this.velocity.y;
-    }
-    this.sprite.x += this.velocity.x * delta;
-    this.sprite.y += this.velocity.y;
+function update(delta: number) {
 
-    drawButton()
+    switch (mModel.sceneState) {
+        case SceneState.first:
+            sceneOne.container.visible = true;
+            sceneTwo.container.visible = false;
+            sceneOne.update();
+            break;
+        
+        case SceneState.second:
+            sceneOne.container.visible = false;
+            sceneTwo.container.visible = true;
+            sceneTwo.update();
+            break;
+    
+        default:
+            break;
+    }
 };
 
 main();
-
-function drawButton() {
-    button.clear()
-    if (buttonData.isPressed) {
-        button.beginFill(0xffff00)
-    } else if (buttonData.isOver) {
-        button.beginFill(0xff00ff)
-    } else {
-        button.beginFill(0x0000ff)
-    }
-    button.drawRoundedRect(100, 100, buttonData.width, buttonData.height, 15)
-}
 
