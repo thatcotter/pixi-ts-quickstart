@@ -7,9 +7,12 @@ export class SceneTwo extends Scene {
         super(model)
 
         this.button.on('pointerdown', () => {
-            model.getInstance().sceneState = SceneState.first
-            console.log(model.getInstance().sceneState);
+            this.model.sceneState = SceneState.first
+            this.button.isPressed = false
+            console.log(this.model.sceneState);
         })
+        this.button.position.x = 100
+        this.button.position.y = 200
     }
 
     update(): void {
@@ -18,11 +21,9 @@ export class SceneTwo extends Scene {
         let tempColor = this.model.buttonData.secondColor.slice(1)
         tempColor = '0x' + tempColor;
 
-        this.button.clear()
-        this.button.beginFill(tempColor)
-        this.button.drawRoundedRect(100, 400,
-            this.model.buttonData.width,
-            this.model.buttonData.height,
-            15)
+        this.button.fill = tempColor;
+        this.button.width = this.model.buttonData.width;
+        this.button.height = this.model.buttonData.height;
+        this.button.update()
     }
 }
