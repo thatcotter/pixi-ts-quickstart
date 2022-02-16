@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { easeIn, easeOut } from './easing';
 
 import * as filters from 'pixi-filters'
+import { AdjustmentFilter } from 'pixi-filters';
 
 let mModel = new Model();
 let sceneOne: SceneOne = new SceneOne(mModel);
@@ -62,9 +63,15 @@ const main = async () => {
 		element.y = window.innerHeight/2
 
 		element.x += 150 * Math.cos(i/10*Math.PI*2)
-		element.y += 150 * Math.sin(i/10*Math.PI*2)
+		element.y += 150 * Math.sin(i/10*Math.PI*2)	
 
-		element.filters = [new filters.AdjustmentFilter()]
+		let adjustment = new filters.AdjustmentFilter();
+		// adjustment.red
+
+		element.filters 
+		element.filters = [adjustment]
+
+		console.log(typeof element.filters[0])
 
 		// console.log(element.filters[0])
 		// element.filters[0].red = 0;
@@ -159,21 +166,16 @@ function update(delta: number) {
 
     mModel.elapsedTime += delta;
 
-	// graphs.forEach((graph, i) => {
-	// 	graph.clear()
-	// 	graph.beginFill(colors[i].value)
-	// 	graph.drawCircle(0,0,sizes[i].value)
-	// })
-
-	for (let i = 0; i < graphs.length; i++) {
-		// const element = graph[i];
-		graphs[i].clear()
-		graphs[i].filters[0].red = colors[i].r
-		graphs[i].filters[0].green = colors[i].g
-		graphs[i].filters[0].blue = colors[i].b
-		graphs[i].beginFill(0xffffff)
-		graphs[i].drawCircle(0,0,sizes[i].value)
-	}
+	graphs.forEach((graph, i) => {
+		graph.clear()
+		if(graph.filters != null && graph.filters[0] instanceof AdjustmentFilter) {
+			graph.filters[0].red = colors[i].r;
+			graph.filters[0].green = colors[i].g;
+			graph.filters[0].blue = colors[i].b;
+		}
+		graph.beginFill(0xffffff)
+		graph.drawCircle(0,0,sizes[i].value)
+	})
 
 
     switch (mModel.sceneState) {
@@ -195,4 +197,3 @@ function update(delta: number) {
 };
 
 main();
-
