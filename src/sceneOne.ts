@@ -1,5 +1,5 @@
 import { Point, Polygon, Sprite } from 'pixi.js'
-// import { lerp } from './easing';
+import { easeIn, easeOut, lerp } from './easing';
 import { Model, SceneState } from './model'
 import { Scene } from './scene'
 
@@ -29,6 +29,19 @@ export class SceneOne extends Scene {
         this.button.width = this.model.buttonData.width;
         this.button.height = this.model.buttonData.height;
         this.button.update()
+
+		// this.sprite.y = lerp(this.sprite.y, this.model.mousePos.y, easeOut(0.05))
+
+		// this.sprite.x = lerp(this.sprite.x, this.model.mousePos.x, easeOut(0.075))
+
+
+		// this.sprite.x = window.innerWidth/2 + Math.cos(this.model.elapsedTime * 0.05) * 100
+
+		// this.sprite.y = window.innerHeight/2 + Math.sin(this.model.elapsedTime * 0.0125) * 100
+
+		// this.sprite.scale.set(Math.cos(this.model.elapsedTime * 0.05) * 0.5, Math.sin(this.model.elapsedTime * 0.0125) * 0.5)
+
+		// this.sprite.alpha = (Math.cos(this.model.elapsedTime * 0.125) + 1) * 0.5;
 
         // this.sprite.x = 
         //     lerp(this.sprite.x, this.model.mousePos.x, 0.02)
