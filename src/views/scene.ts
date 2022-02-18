@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
-import { Button } from "./button";
-import { Model } from "./model";
+import { Button } from "../components/button";
+import { Model } from "../model/model";
 
 export class Scene {
     model: Model;

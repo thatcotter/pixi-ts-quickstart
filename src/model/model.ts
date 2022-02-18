@@ -3,7 +3,7 @@ import { Point } from "pixi.js";
 export class Model {
     private static instance: Model
 
-    buttonData: any = {
+    buttonData: buttonData = {
         width: 200,
         height: 100,
         firstColor: '#3d983d',
@@ -30,4 +30,11 @@ export class Model {
 export enum SceneState{
     first = 'scene one',
     second = 'scene two'
+}
+
+interface buttonData {
+    width: number,
+    height: number,
+    firstColor: string,
+    secondColor: string,
 }

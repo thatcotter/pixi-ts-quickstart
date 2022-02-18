@@ -1,4 +1,4 @@
-import { Model, SceneState } from './model'
+import { Model, SceneState } from '../model/model'
 import { Scene } from './scene'
 
 export class SceneTwo extends Scene {
@@ -21,7 +21,7 @@ export class SceneTwo extends Scene {
         let tempColor = this.model.buttonData.secondColor.slice(1)
         tempColor = '0x' + tempColor;
 
-        this.button.fill = tempColor;
+        this.button.fill = parseInt(tempColor);
         this.button.width = this.model.buttonData.width;
         this.button.height = this.model.buttonData.height;
         this.button.update()

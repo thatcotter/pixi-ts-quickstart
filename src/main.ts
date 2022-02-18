@@ -1,13 +1,11 @@
 import * as PIXI from 'pixi.js'
-import * as dat from 'dat.gui'
-import { Model, SceneState } from './model'
-import { SceneOne } from './sceneOne';
-import { SceneTwo } from './sceneTwo';
+import { Model, SceneState } from './model/model'
+import { SceneOne } from './views/sceneOne';
+import { SceneTwo } from './views/sceneTwo';
 import { gsap } from "gsap";
-import { easeIn, easeOut } from './easing';
-
 import * as filters from 'pixi-filters'
 import { AdjustmentFilter } from 'pixi-filters';
+import { guiSetup } from './controllers/gui';
 
 let mModel = new Model();
 let sceneOne: SceneOne = new SceneOne(mModel);
@@ -29,7 +27,7 @@ const load = (app: PIXI.Application) => {
 
 const main = async () => {
     // Actual app
-    let app = new PIXI.Application({antialias: true, backgroundColor: 0x111111});
+    let app = new PIXI.Application({antialias: true, backgroundColor: 0x113311});
 
     // Display application properly
     document.body.style.margin = '0';
@@ -53,8 +51,8 @@ const main = async () => {
     sceneOne.sprite = sprite;
     sceneOne.container.addChild(sprite);
 
-    // app.stage.addChild(sceneOne.container);
-    // app.stage.addChild(sceneTwo.container);
+    app.stage.addChild(sceneOne.container);
+    app.stage.addChild(sceneTwo.container);
 
 
 	for (let i = 0; i < 10; i++) {
@@ -66,15 +64,7 @@ const main = async () => {
 		element.y += 150 * Math.sin(i/10*Math.PI*2)	
 
 		let adjustment = new filters.AdjustmentFilter();
-		// adjustment.red
-
-		element.filters 
 		element.filters = [adjustment]
-
-		console.log(typeof element.filters[0])
-
-		// console.log(element.filters[0])
-		// element.filters[0].red = 0;
 
 		graphs.push(element)
 		app.stage.addChild(element)
@@ -82,7 +72,6 @@ const main = async () => {
 		sizes[i] = {
 			value: 10
 		};
-
 
 		colors[i] = {
 			r: 1,
@@ -101,7 +90,7 @@ const main = async () => {
 
     app.stage.on('pointerdown', event => {
         mModel.mousePos.set(event.data.global.x, event.data.global.y)
-		console.log(colors)
+		// console.log(colors)
     })
 
     // Handle window resizing
@@ -117,37 +106,15 @@ const main = async () => {
 
     document.body.appendChild(app.view);
 
-    const gui = new dat.GUI()
-    gui.add(mModel.getInstance().buttonData, 'width', 0, 200)
-    gui.add(mModel.getInstance().buttonData, 'height', 0, 200)
-    gui.addColor(mModel.getInstance().buttonData, 'firstColor')
-    gui.addColor(mModel.getInstance().buttonData, 'secondColor')
+    guiSetup(mModel, tl);
 
-	let timelineFolder = gui.addFolder("timeline")
-	timelineFolder.open()
-
-	let tlCallbacks = {
-		pause: () => tl.pause(),
-		play: () => tl.play(),
-		reverse: () => tl.reverse(),
-		progress: 0
-	}
-
-	timelineFolder.add(tlCallbacks, "pause")
-	timelineFolder.add(tlCallbacks, "play")
-	timelineFolder.add(tlCallbacks, "reverse")
-	timelineFolder.add(tlCallbacks, "progress", 0.0, 1.0, 0.01).onChange((value) => {
-		tl.play()
-		tl.progress(value)
-		tl.pause()
-	})
 
 	sizes.forEach((size, i) => {
-		tl.to(sizes[i],
+		tl.to(size,
 			{
 				value: 100,
-				duration: 3
-			}, "-=2.5")
+				duration: 2
+			}, "-=3.80")
 		tl.to(colors[i],
 			{
 				r: Math.random(),
@@ -168,7 +135,8 @@ function update(delta: number) {
 
 	graphs.forEach((graph, i) => {
 		graph.clear()
-		if(graph.filters != null && graph.filters[0] instanceof AdjustmentFilter) {
+		if(graph.filters != null && 
+            graph.filters[0] instanceof AdjustmentFilter) {
 			graph.filters[0].red = colors[i].r;
 			graph.filters[0].green = colors[i].g;
 			graph.filters[0].blue = colors[i].b;
@@ -176,7 +144,6 @@ function update(delta: number) {
 		graph.beginFill(0xffffff)
 		graph.drawCircle(0,0,sizes[i].value)
 	})
-
 
     switch (mModel.sceneState) {
         case SceneState.first:

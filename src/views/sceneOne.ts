@@ -1,6 +1,6 @@
 import { Point, Polygon, Sprite } from 'pixi.js'
-import { easeIn, easeOut, lerp } from './easing';
-import { Model, SceneState } from './model'
+import { easeIn, easeOut, lerp } from '../utils/easing';
+import { Model, SceneState } from '../model/model'
 import { Scene } from './scene'
 
 export class SceneOne extends Scene {
@@ -25,7 +25,7 @@ export class SceneOne extends Scene {
         let tempColor = this.model.buttonData.firstColor.slice(1)
         tempColor = '0x' + tempColor;
 
-        this.button.fill = tempColor;
+        this.button.fill = parseInt(tempColor);
         this.button.width = this.model.buttonData.width;
         this.button.height = this.model.buttonData.height;
         this.button.update()
