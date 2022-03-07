@@ -1,7 +1,9 @@
-import { Point } from "pixi.js";
+import { Application, Point } from "pixi.js";
 
 export class Model {
     private static instance: Model
+
+    app: Application;
 
     buttonData: buttonData = {
         width: 200,
@@ -15,15 +17,21 @@ export class Model {
     elapsedTime: number = 0;
     sceneState: SceneState = SceneState.first;
 
-    constructor() {
+    constructor(app?: Application) {
         if (Model.instance) {
             return Model.instance;
         }
+        if(app) this.app = app;
         Model.instance = this;
     }
 
-    getInstance(): Model{
-        return Model.instance
+    static getInstance(app?: Application): Model{
+        if (Model.instance) {
+            return Model.instance
+        }else {
+            if(app) return new Model(app)
+            return new Model()
+        }
     }
 }
 
