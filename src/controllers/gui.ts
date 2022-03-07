@@ -8,8 +8,8 @@ export function guiSetup(model: Model, tl: Timeline): void {
 	let color = {
 		background: '#345678'
 	}
-	let backgroundColor = gui.addColor(color, "background").onChange(() => {
-		let tempColor = color.background.slice(1)
+	gui.addColor(color, "background").onChange(value => {
+		let tempColor = value.slice(1)
         tempColor = '0x' + tempColor;
 		model.app.renderer.backgroundColor = parseInt(tempColor)
 	})
